@@ -1,3 +1,5 @@
+#python -m uvicorn app.main:app --reload
+
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from .database import Base, engine, get_db
@@ -44,3 +46,7 @@ def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
     db.refresh(new_movie)
 
     return new_movie
+
+@app.get("/movies")
+def get_movies(db: Session = Depends(get_db)):
+    return db.query(models.Movie).all()
