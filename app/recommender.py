@@ -32,7 +32,7 @@ def score_movies(movie, genre_counts):
 
     return score
 
-def get_recommendations(movies, genre_counts, user):
+def get_recommendations(movie, genre_counts, user):
 
     #Get watches / likes
     watched_or_liked = set()
@@ -42,13 +42,15 @@ def get_recommendations(movies, genre_counts, user):
 
     for watch in user.watches:
         watched_or_liked.add(watch.movie_id)
-        
+
+    print("watched_or_liked:", watched_or_liked)
+
     recommendations = []
 
-    for movie in movies:
-        if movie in watched_or_liked:
+    for movie in movie:
+        if movie.id in watched_or_liked:
             continue
-        score = score_movies(movies, genre_counts)
+        score = score_movies(movie, genre_counts)
 
         recommendations.append({"movie": movie, "score": score})
 
