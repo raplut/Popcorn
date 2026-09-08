@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from .database import Base, engine, get_db
 from . import models, schemas
-from .recommender import genre_counter, get_liked_genres, score_movies, get_recommendations
+from .recommender import get_user_genres, get_recommendations, director_counter, get_liked_actors, actor_counter
 
 Base.metadata.create_all(bind=engine)
 
@@ -116,8 +116,13 @@ def get_user_recommendations(user_id: int, db: Session = Depends(get_db)):
    
    movies = db.query(models.Movie).all()
 
-   genre_counts = get_liked_genres(user)
+   genre_counts = get_user_genres(user)
 
-   recommendations = get_recommendations(movies, genre_counts, user)
+   director_counts = director_counter(user)
+
+   liked_actors = get_liked_actors(user)
+   actor_counts = actor_counter(liked_actors)
+
+   recommendations = get_recommendations(movies, genre_counts, director_counts, actor_counts, user)
 
    return recommendations
